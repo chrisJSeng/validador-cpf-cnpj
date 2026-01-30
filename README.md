@@ -1,7 +1,7 @@
 # Validador CPF/CNPJ 🇧🇷
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Coverage](https://img.shields.io/badge/coverage-80%25+-green.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj)
+[![Coverage](https://img.shields.io/badge/coverage-99%25+-green.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A high-performance, secure, and modular TypeScript library for validating Brazilian documents (CPF and CNPJ).
@@ -9,9 +9,9 @@ A high-performance, secure, and modular TypeScript library for validating Brazil
 ## 🚀 Features
 
 - ✅ **TypeScript First**: Full type safety and IntelliSense support
-- ✅ **High Performance**: Uses efficient data structures (Map, Set, Object.freeze)
+- ✅ **High Performance**: Uses efficient data structures (Set, Object.freeze)
 - ✅ **Security Focused**: Comprehensive input validation with guard rails
-- ✅ **80%+ Test Coverage**: Thoroughly tested with Jest
+- ✅ **99%+ Test Coverage**: Thoroughly tested with Jest
 - ✅ **SOLID Principles**: Clean, maintainable, and extensible architecture
 - ✅ **Modern JavaScript**: ES2022+ features
 - ✅ **Zero Dependencies**: No external runtime dependencies

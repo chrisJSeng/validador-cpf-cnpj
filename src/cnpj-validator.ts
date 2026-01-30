@@ -68,13 +68,13 @@ export class CNPJValidator implements IDocumentValidator {
       return { isValid: false, error: stringGuard.error };
     }
 
-    const notEmptyGuard = guardNotEmpty(stringGuard.cleanedInput!);
+    const notEmptyGuard = guardNotEmpty(stringGuard.cleanedInput as string);
     if (!notEmptyGuard.isValid) {
       return { isValid: false, error: notEmptyGuard.error };
     }
 
     // Clean and validate characters
-    const cleaned = this.clean(notEmptyGuard.cleanedInput!);
+    const cleaned = this.clean(notEmptyGuard.cleanedInput as string);
     const charGuard = guardValidCharacters(cleaned, CNPJ_DIGIT_REGEX);
     if (!charGuard.isValid) {
       return { isValid: false, error: charGuard.error };
@@ -127,25 +127,30 @@ export class CNPJValidator implements IDocumentValidator {
 }
 
 /**
+ * Singleton CNPJ validator instance for convenience functions
+ */
+const cnpjValidatorInstance = new CNPJValidator();
+
+/**
  * Convenience function to validate CNPJ
+ * Note: For repeated validations, consider using the CNPJValidator class directly for better performance
  */
 export function validateCNPJ(input: string): ValidationResult {
-  const validator = new CNPJValidator();
-  return validator.validate(input);
+  return cnpjValidatorInstance.validate(input);
 }
 
 /**
  * Convenience function to format CNPJ
+ * Note: For repeated operations, consider using the CNPJValidator class directly for better performance
  */
 export function formatCNPJ(input: string): string | null {
-  const validator = new CNPJValidator();
-  return validator.format(input);
+  return cnpjValidatorInstance.format(input);
 }
 
 /**
  * Convenience function to clean CNPJ
+ * Note: For repeated operations, consider using the CNPJValidator class directly for better performance
  */
 export function cleanCNPJ(input: string): string {
-  const validator = new CNPJValidator();
-  return validator.clean(input);
+  return cnpjValidatorInstance.clean(input);
 }

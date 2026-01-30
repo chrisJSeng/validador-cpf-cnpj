@@ -2,7 +2,6 @@ import { MODULO_DIVISOR, MIN_REMAINDER_FOR_ZERO, DIGIT_ZERO } from './constants'
 
 /**
  * Calculates a check digit based on multipliers (used for CPF and CNPJ)
- * Using object of arrays approach for better performance
  */
 export function calculateCheckDigit(digits: ReadonlyArray<number>, multipliers: ReadonlyArray<number>): number {
   const sum = digits.reduce((acc, digit, index) => acc + digit * multipliers[index], DIGIT_ZERO);
@@ -26,6 +25,7 @@ export function removeNonDigits(input: string): string {
 
 /**
  * Checks if all digits in the string are the same
+ * Exported for advanced use cases
  */
 export function areAllDigitsSame(input: string): boolean {
   const firstChar = input[0];

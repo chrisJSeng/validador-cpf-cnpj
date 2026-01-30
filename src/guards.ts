@@ -80,13 +80,18 @@ export function guardLength(
 
 /**
  * Composite guard that chains multiple guards
+ * Returns the last valid guard result or the first invalid one
  */
 export function chainGuards(...guards: GuardResult[]): GuardResult {
+  if (guards.length === 0) {
+    throw new Error('chainGuards requires at least one guard');
+  }
+
   for (const guard of guards) {
     if (!guard.isValid) {
       return guard;
     }
   }
 
-  return guards[guards.length - 1] ?? { isValid: true };
+  return guards[guards.length - 1];
 }

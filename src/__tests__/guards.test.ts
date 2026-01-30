@@ -134,9 +134,8 @@ describe('Guards', () => {
       expect(result.error).toBe('Error at step 2');
     });
 
-    it('should handle empty guards array', () => {
-      const result = chainGuards();
-      expect(result.isValid).toBe(true);
+    it('should throw error for empty guards array', () => {
+      expect(() => chainGuards()).toThrow('chainGuards requires at least one guard');
     });
 
     it('should handle single guard', () => {

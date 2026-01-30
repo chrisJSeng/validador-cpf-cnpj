@@ -27,7 +27,7 @@ import { calculateCheckDigit, stringToDigitArray, removeNonDigits } from './util
  */
 export class CPFValidator implements IDocumentValidator {
   /**
-   * Cache for multipliers using Map for better performance
+   * Pre-calculated multipliers for performance
    */
   private readonly firstDigitMultipliers: ReadonlyArray<number>;
   private readonly secondDigitMultipliers: ReadonlyArray<number>;
@@ -72,13 +72,13 @@ export class CPFValidator implements IDocumentValidator {
       return { isValid: false, error: stringGuard.error };
     }
 
-    const notEmptyGuard = guardNotEmpty(stringGuard.cleanedInput!);
+    const notEmptyGuard = guardNotEmpty(stringGuard.cleanedInput as string);
     if (!notEmptyGuard.isValid) {
       return { isValid: false, error: notEmptyGuard.error };
     }
 
     // Clean and validate characters
-    const cleaned = this.clean(notEmptyGuard.cleanedInput!);
+    const cleaned = this.clean(notEmptyGuard.cleanedInput as string);
     const charGuard = guardValidCharacters(cleaned, CPF_DIGIT_REGEX);
     if (!charGuard.isValid) {
       return { isValid: false, error: charGuard.error };
@@ -131,25 +131,30 @@ export class CPFValidator implements IDocumentValidator {
 }
 
 /**
+ * Singleton CPF validator instance for convenience functions
+ */
+const cpfValidatorInstance = new CPFValidator();
+
+/**
  * Convenience function to validate CPF
+ * Note: For repeated validations, consider using the CPFValidator class directly for better performance
  */
 export function validateCPF(input: string): ValidationResult {
-  const validator = new CPFValidator();
-  return validator.validate(input);
+  return cpfValidatorInstance.validate(input);
 }
 
 /**
  * Convenience function to format CPF
+ * Note: For repeated operations, consider using the CPFValidator class directly for better performance
  */
 export function formatCPF(input: string): string | null {
-  const validator = new CPFValidator();
-  return validator.format(input);
+  return cpfValidatorInstance.format(input);
 }
 
 /**
  * Convenience function to clean CPF
+ * Note: For repeated operations, consider using the CPFValidator class directly for better performance
  */
 export function cleanCPF(input: string): string {
-  const validator = new CPFValidator();
-  return validator.clean(input);
+  return cpfValidatorInstance.clean(input);
 }
