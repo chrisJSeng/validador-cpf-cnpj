@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+.tmp/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -46,6 +47,9 @@ web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Examples (not part of the package)
+src/examples.ts
 
 # Optional npm cache directory
 .npm
