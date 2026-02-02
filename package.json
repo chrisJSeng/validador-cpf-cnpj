@@ -1,7 +1,7 @@
 {
-  "name": "validador-cpf-cnpj",
-  "version": "1.0.0",
-  "description": "Performant and secure Brazilian document validator (CPF/CNPJ)",
+  "name": "validador-cnpj-cpf",
+  "version": "1.0.1",
+  "description": "Brazilian CPF/CNPJ validator (supports alphanumeric CNPJ / CNPJ alfanumerico) - validador de CPF/CNPJ (suporta CNPJ alfanumérico)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -21,10 +21,19 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "validador",
     "cpf",
+    "cpf-validator",
     "cnpj",
+    "cnpj-validator",
+    "cnpj-alfanumerico",
+    "alfanumerico",
+    "alphanumeric",
     "validator",
+    "brasil",
     "brazil",
+    "brazilian",
+    "pt-br",
     "document",
     "validation",
     "typescript"
