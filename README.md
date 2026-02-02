@@ -21,7 +21,7 @@ A high-performance, secure, and modular TypeScript library for validating Brazil
 ## 📦 Installation
 
 ```bash
-npm install validador-cpf-cnpj
+npm install validador-cnpj-cpf
 ```
 
 ## 🔧 Usage
