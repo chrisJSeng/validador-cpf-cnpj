@@ -21,7 +21,7 @@ A high-performance, secure, and modular TypeScript library for validating Brazil
 ## 📦 Installation
 
 ```bash
-npm install validador-cpf-cnpj
+npm install validador-cnpj-cpf
 ```
 
 ## 🔧 Usage
@@ -49,7 +49,7 @@ Use strict mode when you want to **avoid formatting/masking invalid documents** 
 ### Basic CPF Validation
 
 ```typescript
-import { validateCPF, formatCPF, cleanCPF, maskCPF } from 'validador-cpf-cnpj';
+import { validateCPF, formatCPF, cleanCPF, maskCPF } from 'validador-cnpj-cpf';
 
 // Validate CPF
 const result = validateCPF('111.444.777-35');
@@ -85,7 +85,7 @@ console.log(cleaned); // "11144477735"
 ### Basic CNPJ Validation
 
 ```typescript
-import { validateCNPJ, formatCNPJ, cleanCNPJ } from 'validador-cpf-cnpj';
+import { validateCNPJ, formatCNPJ, cleanCNPJ } from 'validador-cnpj-cpf';
 
 // Validate CNPJ
 const result = validateCNPJ('11.222.333/0001-81');
@@ -113,7 +113,7 @@ console.log(cleaned); // "11222333000181"
 ### Advanced Usage with Classes
 
 ```typescript
-import { CPFValidator, CNPJValidator } from 'validador-cpf-cnpj';
+import { CPFValidator, CNPJValidator } from 'validador-cnpj-cpf';
 
 // Using CPF validator class
 const cpfValidator = new CPFValidator();
@@ -134,7 +134,7 @@ import {
   guardLength,
   chainGuards,
   stripDocumentFormatting,
-} from 'validador-cpf-cnpj';
+} from 'validador-cnpj-cpf';
 
 // Create custom validation pipeline
 const input = '12345678901';
