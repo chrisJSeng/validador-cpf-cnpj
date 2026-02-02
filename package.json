@@ -1,6 +1,6 @@
 {
   "name": "validador-cpf-cnpj",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Performant and secure Brazilian document validator (CPF/CNPJ)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
