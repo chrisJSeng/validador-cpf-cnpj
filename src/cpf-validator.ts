@@ -81,6 +81,35 @@ export class CPFValidator implements IDocumentValidator {
     return finalGuard.isValid ? this.validateCheckDigits(cleaned) : invalidResult(finalGuard.error);
   }
 
+  public weakValidate(input: string): ValidationResult {
+    const stringGuard = guardIsString(input);
+
+    const notEmptyGuard = stringGuard.isValid
+      ? guardNotEmpty(stringGuard.cleanedInput as string)
+      : stringGuard;
+
+    const baseGuard = chainGuards(stringGuard, notEmptyGuard);
+
+    if (!baseGuard.isValid) return invalidResult(baseGuard.error);
+
+    const cleaned = this.clean(baseGuard.cleanedInput as string);
+    const charGuard = guardValidCharacters(cleaned, CPF_ALLOWED_CHARS_REGEX);
+    const lengthGuard = guardLength(cleaned, CPF_LENGTH, ERROR_MESSAGES.INVALID_CPF_LENGTH);
+
+    const structureGuard: GuardResult = CPF_ALPHANUMERIC_REGEX.test(cleaned)
+      ? { isValid: true, cleanedInput: cleaned }
+      : { isValid: false, error: ERROR_MESSAGES.INVALID_CHARACTERS };
+
+    const patternGuard: GuardResult =
+      CPF_DIGIT_REGEX.test(cleaned) && INVALID_CPF_PATTERNS.has(cleaned)
+        ? { isValid: false, error: ERROR_MESSAGES.INVALID_CPF_PATTERN }
+        : { isValid: true, cleanedInput: cleaned };
+
+    const finalGuard = chainGuards(charGuard, lengthGuard, structureGuard, patternGuard);
+
+    return finalGuard.isValid ? validResult() : invalidResult(finalGuard.error);
+  }
+
   private validateCheckDigits(cpf: string): ValidationResult {
     const values = stringToDigitArray(cpf);
     const firstProvided = Number(cpf[CPF_FIRST_DIGIT_POSITION]);
@@ -108,6 +137,10 @@ const cpfValidatorInstance = new CPFValidator();
 
 export function validateCPF(input: string): ValidationResult {
   return cpfValidatorInstance.validate(input);
+}
+
+export function weakValidateCPF(input: string): ValidationResult {
+  return cpfValidatorInstance.weakValidate(input);
 }
 
 export function formatCPF(input: string, options?: FormatOptions): string | null {

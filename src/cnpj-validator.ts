@@ -67,6 +67,38 @@ export class CNPJValidator implements IDocumentValidator {
       : invalidResult(baseGuard.error);
   }
 
+  public weakValidate(input: string): ValidationResult {
+    const stringGuard = guardIsString(input);
+    const notEmptyGuard = stringGuard.isValid
+      ? guardNotEmpty(stringGuard.cleanedInput as string)
+      : stringGuard;
+
+    const baseGuard = chainGuards(stringGuard, notEmptyGuard);
+
+    return baseGuard.isValid
+      ? this.weakValidateCleanedInput(baseGuard.cleanedInput as string)
+      : invalidResult(baseGuard.error);
+  }
+
+  private weakValidateCleanedInput(input: string): ValidationResult {
+    const cleaned = this.clean(input);
+    const charGuard = guardValidCharacters(cleaned, CNPJ_ALLOWED_CHARS_REGEX);
+    const lengthGuard = guardLength(cleaned, CNPJ_LENGTH, ERROR_MESSAGES.INVALID_CNPJ_LENGTH);
+
+    const structureGuard: GuardResult = CNPJ_ALPHANUMERIC_REGEX.test(cleaned)
+      ? { isValid: true, cleanedInput: cleaned }
+      : { isValid: false, error: ERROR_MESSAGES.INVALID_CHARACTERS };
+
+    const patternGuard: GuardResult =
+      CNPJ_DIGIT_REGEX.test(cleaned) && INVALID_CNPJ_PATTERNS.has(cleaned)
+        ? { isValid: false, error: ERROR_MESSAGES.INVALID_CNPJ_PATTERN }
+        : { isValid: true, cleanedInput: cleaned };
+
+    const finalGuard = chainGuards(charGuard, lengthGuard, structureGuard, patternGuard);
+
+    return finalGuard.isValid ? validResult() : invalidResult(finalGuard.error);
+  }
+
   private validateCleanedInput(input: string): ValidationResult {
     const cleaned = this.clean(input);
     const charGuard = guardValidCharacters(cleaned, CNPJ_ALLOWED_CHARS_REGEX);
@@ -113,6 +145,10 @@ const cnpjValidatorInstance = new CNPJValidator();
 
 export function validateCNPJ(input: string): ValidationResult {
   return cnpjValidatorInstance.validate(input);
+}
+
+export function weakValidateCNPJ(input: string): ValidationResult {
+  return cnpjValidatorInstance.weakValidate(input);
 }
 
 export function formatCNPJ(input: string, options?: FormatOptions): string | null {
