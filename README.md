@@ -9,7 +9,7 @@ A high-performance, secure, and modular TypeScript library for validating Brazil
 ## 🚀 Features
 
 - ✅ **TypeScript First**: Full type safety and IntelliSense support
-- ✅ **High Performance**: Uses efficient data structures (Set, Object.freeze)
+- ✅ **High Performance**: Uses efficient data structures
 - ✅ **Security Focused**: Comprehensive input validation with guard rails
 - ✅ **99%+ Test Coverage**: Thoroughly tested with Jest
 - ✅ **SOLID Principles**: Clean, maintainable, and extensible architecture
@@ -26,6 +26,11 @@ npm install validador-cnpj-cpf
 
 ## 🔧 Usage
 
+> **Recommendations**
+>
+> - Use **`weakValidateCPF` / `weakValidateCNPJ`** for development, QA/testing environments, and during the alphanumeric CNPJ transition period (July 2026+)
+> - Use **`validateCPF` / `validateCNPJ`** for production validation when check digit verification is required. This functions can perform weak validations too (by passing additional parameter)
+>
 > Notes
 >
 > - All public APIs accept **strings only**.
@@ -45,6 +50,78 @@ When you pass `{ validate: true }`, they become **strict**:
 - If the document is invalid, they return `null`.
 
 Use strict mode when you want to **avoid formatting/masking invalid documents** (e.g., in UI output, logs, or API responses).
+
+### Weak Validation (New!)
+
+Weak validation checks document structure (format, length, allowed characters) but **skips check digit verification**. This is particularly useful in **development and QA environments** where you need flexible validation strategies.
+
+#### When to Use Weak Validation
+
+**Production Use Cases:**
+
+- **Alphanumeric CNPJs during the transition period** (July 2026+) when check digit algorithms may vary
+- Accepting documents from external systems that may use different verification algorithms
+- Pre-validation in forms before submitting to backend for full verification
+- Cases where you need to accept documents with potentially incorrect check digits
+
+**Development & QA Use Cases:**
+
+- **Mock/Test Data Generation**: Create test documents without calculating valid check digits 
+- **Integration Testing**: Test system behavior with various document formats without valid checksums
+- **Data Migration**: Validate document structure during migration when check digits might be recalculated later
+- **Seed Data**: Quickly populate databases with realistic-looking but not necessarily valid documents
+- **UI/UX Testing**: Test form validation, formatting, and error handling independently of check digit logic
+- **Performance Testing**: Generate large volumes of test documents without the overhead of checksum calculation
+
+#### Examples
+
+```typescript
+import { weakValidateCPF, weakValidateCNPJ, validateCPF, validateCNPJ } from 'validador-cnpj-cpf';
+
+// Option 1: Dedicated weak validation functions
+const cpfResult = weakValidateCPF('123.456.789-01');
+console.log(cpfResult.isValid); // true (structure is valid)
+
+// Option 2: Use { weak: true } parameter
+const cnpjResult = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: true });
+console.log(cnpjResult.isValid); // true (format matches [A-Z0-9]{12}[0-9]{2})
+
+// Strict validation (default)
+const strictResult = validateCNPJ('NZ.83Y.1JX/0001-69');
+console.log(strictResult.isValid); // false (check digits don't match)
+
+// Still rejects invalid structure (last 2 must be numeric digits)
+const invalidResult = weakValidateCNPJ('1A.23B.45C/678D-MN');
+console.log(invalidResult.isValid); // false
+
+// Development/QA: Quick test data generation
+const testDocuments = [
+  'AA.BBB.CCC/DDDD-01', // Fast mock CNPJ for UI testing
+  '123.456.789-99',     // Fast mock CPF for form testing
+];
+testDocuments.forEach(doc => {
+  console.log(validateCNPJ(doc, { weak: true })); // Validate format without calculating checksums
+});
+```
+
+#### Conditional Validation by Environment
+
+Switch between strict and weak validation based on `NODE_ENV`:
+
+```typescript
+import { validateCPF } from 'validador-cnpj-cpf';
+
+const isDev = process.env.NODE_ENV !== 'production';
+
+// Option 1: Pass weak parameter based on environment
+const result = validateCPF('123.456.789-01', { weak: isDev });
+// Dev: { isValid: true }, Prod: { isValid: false }
+
+// Option 2: Use ternary for function selection
+import { weakValidateCPF } from 'validador-cnpj-cpf';
+const cpfValidator = isDev ? weakValidateCPF : validateCPF;
+const result2 = cpfValidator('123.456.789-01');
+```
 
 ### Basic CPF Validation
 
@@ -197,14 +274,16 @@ interface ValidationResult {
 
 ### CPF Functions
 
-- `validateCPF(input: string): ValidationResult` - Validates a CPF
+- `validateCPF(input: string, options?: { weak?: boolean }): ValidationResult` - Validates a CPF. Pass `{ weak: true }` to skip check digit verification
+- `weakValidateCPF(input: string): ValidationResult` - Validates CPF structure only (alias for `validateCPF(input, { weak: true })`)
 - `formatCPF(input: string, options?: { validate?: boolean }): string | null` - Formats a CPF (best-effort by default; strict with `{ validate: true }`)
 - `maskCPF(input: string, options?: { validate?: boolean }): string | null` - Masks a CPF as `XXX.***.***-YY` (best-effort by default; strict with `{ validate: true }`)
 - `cleanCPF(input: string): string` - Removes formatting from CPF
 
 ### CNPJ Functions
 
-- `validateCNPJ(input: string): ValidationResult` - Validates a CNPJ
+- `validateCNPJ(input: string, options?: { weak?: boolean }): ValidationResult` - Validates a CNPJ. Pass `{ weak: true }` to skip check digit verification
+- `weakValidateCNPJ(input: string): ValidationResult` - Validates CNPJ structure only (alias for `validateCNPJ(input, { weak: true })`)
 - `formatCNPJ(input: string, options?: { validate?: boolean }): string | null` - Formats a CNPJ (best-effort by default; strict with `{ validate: true }`)
 - `cleanCNPJ(input: string): string` - Removes formatting from CNPJ
 
@@ -226,6 +305,17 @@ interface ValidationResult {
 - `chainGuards(...guards: GuardResult[]): GuardResult`
 
 ## 🧪 Testing
+
+The library includes comprehensive test coverage (99%+) with tests organized by functionality:
+
+- **cpf-validator.test.ts** - CPF validation, formatting, and weak validation tests
+- **cnpj-validator.test.ts** - CNPJ validation, formatting, alphanumeric support, and weak validation tests
+- **guards.test.ts** - Input validation guard tests
+- **utils.test.ts** - Utility function tests
+- **variant-analysis.test.ts** - Edge cases and variant testing
+- **index.test.ts** - Integration tests
+
+Weak validation tests are integrated into the existing test files, making it easy to compare behavior between strict and weak validation modes.
 
 ```bash
 # Run tests (includes coverage)
