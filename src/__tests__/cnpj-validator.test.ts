@@ -208,4 +208,34 @@ describe('CNPJValidator', () => {
       expect(result.error).toBe(ERROR_MESSAGES.INVALID_CNPJ_PATTERN);
     });
   });
+
+  describe('validateCNPJ with { weak: true } option', () => {
+    it('should behave like weakValidateCNPJ when weak option is true', () => {
+      const resultWeak = validateCNPJ(CNPJ_FIXTURES.invalidDigits.both, { weak: true });
+      const resultWeakFunc = weakValidateCNPJ(CNPJ_FIXTURES.invalidDigits.both);
+
+      expect(resultWeak.isValid).toBe(true);
+      expect(resultWeak).toEqual(resultWeakFunc);
+    });
+
+    it('should accept alphanumeric CNPJ with arbitrary check digits when weak', () => {
+      const result = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: true });
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should use strict validation when weak option is false', () => {
+      const result = validateCNPJ(CNPJ_FIXTURES.invalidDigits.both, { weak: false });
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CNPJ_DIGITS);
+    });
+
+    it('should use strict validation when no options provided', () => {
+      const result = validateCNPJ(CNPJ_FIXTURES.invalidDigits.both);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CNPJ_DIGITS);
+    });
+  });
 });

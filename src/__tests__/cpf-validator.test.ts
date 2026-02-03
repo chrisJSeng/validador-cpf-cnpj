@@ -190,4 +190,28 @@ describe('CPFValidator', () => {
       expect(result.error).toBe(ERROR_MESSAGES.INVALID_CPF_PATTERN);
     });
   });
+
+  describe('validateCPF with { weak: true } option', () => {
+    it('should behave like weakValidateCPF when weak option is true', () => {
+      const resultWeak = validateCPF(CPF_FIXTURES.invalidDigits.both, { weak: true });
+      const resultWeakFunc = weakValidateCPF(CPF_FIXTURES.invalidDigits.both);
+
+      expect(resultWeak.isValid).toBe(true);
+      expect(resultWeak).toEqual(resultWeakFunc);
+    });
+
+    it('should use strict validation when weak option is false', () => {
+      const result = validateCPF(CPF_FIXTURES.invalidDigits.both, { weak: false });
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CPF_DIGITS);
+    });
+
+    it('should use strict validation when no options provided', () => {
+      const result = validateCPF(CPF_FIXTURES.invalidDigits.both);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CPF_DIGITS);
+    });
+  });
 });
