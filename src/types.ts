@@ -20,3 +20,7 @@ export interface GuardResult {
 export interface FormatOptions {
   validate?: boolean;
 }
+
+export interface ValidationOptions {
+  weak?: boolean;
+}

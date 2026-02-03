@@ -17,7 +17,13 @@ import {
   guardLength,
   chainGuards,
 } from './guards';
-import { FormatOptions, GuardResult, IDocumentValidator, ValidationResult } from './types';
+import {
+  FormatOptions,
+  GuardResult,
+  IDocumentValidator,
+  ValidationOptions,
+  ValidationResult,
+} from './types';
 import {
   calculateCheckDigit,
   invalidResult,
@@ -135,8 +141,12 @@ export class CPFValidator implements IDocumentValidator {
 
 const cpfValidatorInstance = new CPFValidator();
 
-export function validateCPF(input: string): ValidationResult {
-  return cpfValidatorInstance.validate(input);
+export function validateCPF(input: string, options?: ValidationOptions): ValidationResult {
+  const isWeakValidation = options?.weak === true;
+
+  return isWeakValidation
+    ? cpfValidatorInstance.weakValidate(input)
+    : cpfValidatorInstance.validate(input);
 }
 
 export function weakValidateCPF(input: string): ValidationResult {

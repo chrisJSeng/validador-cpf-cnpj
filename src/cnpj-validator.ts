@@ -17,7 +17,13 @@ import {
   guardLength,
   chainGuards,
 } from './guards';
-import { FormatOptions, GuardResult, IDocumentValidator, ValidationResult } from './types';
+import {
+  FormatOptions,
+  GuardResult,
+  IDocumentValidator,
+  ValidationOptions,
+  ValidationResult,
+} from './types';
 import {
   calculateCheckDigit,
   invalidResult,
@@ -143,8 +149,12 @@ export class CNPJValidator implements IDocumentValidator {
 
 const cnpjValidatorInstance = new CNPJValidator();
 
-export function validateCNPJ(input: string): ValidationResult {
-  return cnpjValidatorInstance.validate(input);
+export function validateCNPJ(input: string, options?: ValidationOptions): ValidationResult {
+  const isWeakValidation = options?.weak === true;
+
+  return isWeakValidation
+    ? cnpjValidatorInstance.weakValidate(input)
+    : cnpjValidatorInstance.validate(input);
 }
 
 export function weakValidateCNPJ(input: string): ValidationResult {

@@ -1,6 +1,25 @@
-export { CPFValidator, validateCPF, weakValidateCPF, formatCPF, cleanCPF, maskCPF } from './cpf-validator';
-export { CNPJValidator, validateCNPJ, weakValidateCNPJ, formatCNPJ, cleanCNPJ } from './cnpj-validator';
-export { ValidationResult, DocumentType, IDocumentValidator } from './types';
+export {
+  CPFValidator,
+  validateCPF,
+  weakValidateCPF,
+  formatCPF,
+  cleanCPF,
+  maskCPF,
+} from './cpf-validator';
+export {
+  CNPJValidator,
+  validateCNPJ,
+  weakValidateCNPJ,
+  formatCNPJ,
+  cleanCNPJ,
+} from './cnpj-validator';
+export {
+  ValidationResult,
+  ValidationOptions,
+  FormatOptions,
+  DocumentType,
+  IDocumentValidator,
+} from './types';
 export {
   CPF_LENGTH,
   CPF_FORMATTED_LENGTH,
@@ -20,7 +39,4 @@ export {
   chainGuards,
 } from './guards';
 
-export {
-  stripDocumentFormatting,
-  removeNonDigits,
-} from './utils';
+export { stripDocumentFormatting, removeNonDigits } from './utils';
