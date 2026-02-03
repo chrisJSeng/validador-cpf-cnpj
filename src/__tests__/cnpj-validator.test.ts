@@ -1,4 +1,4 @@
-import { CNPJValidator, validateCNPJ, formatCNPJ, cleanCNPJ } from '../cnpj-validator';
+import { CNPJValidator, validateCNPJ, weakValidateCNPJ, formatCNPJ, cleanCNPJ } from '../cnpj-validator';
 import { CNPJ_FIRST_MULTIPLIERS, CNPJ_SECOND_MULTIPLIERS, ERROR_MESSAGES } from '../constants';
 import { calculateCheckDigit, stringToBase36ValueArray } from '../utils';
 import { CNPJ_FIXTURES } from './fixtures';
@@ -146,6 +146,66 @@ describe('CNPJValidator', () => {
       const result = cleanCNPJ(CNPJ_FIXTURES.formatted);
 
       expect(result).toBe(CNPJ_FIXTURES.valid);
+    });
+  });
+
+  describe('weakValidate (structure only, skips check digits)', () => {
+    it('should accept valid CNPJ', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.valid);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept formatted valid CNPJ', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.formatted);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept CNPJ with wrong check digits (weak validation)', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.invalidDigits.both);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept alphanumeric CNPJ with arbitrary check digits', () => {
+      const result = weakValidateCNPJ('NZ.83Y.1JX/0001-69');
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept mixed case alphanumeric CNPJ', () => {
+      const result = weakValidateCNPJ('1a.23b.45c/678d-90');
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should reject non-string input', () => {
+      const result = weakValidateCNPJ(123 as unknown as string);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_TYPE);
+    });
+
+    it('should reject CNPJ with wrong length', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.wrongLength);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CNPJ_LENGTH);
+    });
+
+    it('should reject CNPJ when last two characters are not digits', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.alphanumeric.lastTwoNotDigits);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CHARACTERS);
+    });
+
+    it('should reject CNPJ with all same digits', () => {
+      const result = weakValidateCNPJ(CNPJ_FIXTURES.invalidPatternAllOnes);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CNPJ_PATTERN);
     });
   });
 });

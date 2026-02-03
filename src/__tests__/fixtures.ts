@@ -28,8 +28,8 @@ export const CNPJ_FIXTURES = Object.freeze({
   }),
   alphanumeric: Object.freeze({
     base12: '1A23B45C678D',
-    mixedFormatted: '1a.23B.45c/678d-90',
-    mixedCleaned: '1A23B45C678D90',
+    mixedFormatted: '1a.23B.45c/678d-42',
+    mixedCleaned: '1A23B45C678D42',
     lastTwoNotDigits: '1A.23B.45C/678D-MN',
   }),
 });

@@ -1,4 +1,4 @@
-import { CPFValidator, validateCPF, formatCPF, cleanCPF, maskCPF } from '../cpf-validator';
+import { CPFValidator, validateCPF, weakValidateCPF, formatCPF, cleanCPF, maskCPF } from '../cpf-validator';
 import { ERROR_MESSAGES } from '../constants';
 import { CPF_FIXTURES } from './fixtures';
 
@@ -141,6 +141,53 @@ describe('CPFValidator', () => {
       const result = cleanCPF(CPF_FIXTURES.formatted);
 
       expect(result).toBe(CPF_FIXTURES.valid);
+    });
+  });
+
+  describe('weakValidate (structure only, skips check digits)', () => {
+    it('should accept valid CPF', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.valid);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept formatted valid CPF', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.formatted);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept CPF with wrong check digits (weak validation)', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.invalidDigits.both);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should accept CPF with wrong first check digit only', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.invalidDigits.first);
+
+      expect(result.isValid).toBe(true);
+    });
+
+    it('should reject non-string input', () => {
+      const result = weakValidateCPF(123 as unknown as string);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_TYPE);
+    });
+
+    it('should reject CPF with wrong length', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.wrongLength);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CPF_LENGTH);
+    });
+
+    it('should reject CPF with all same digits', () => {
+      const result = weakValidateCPF(CPF_FIXTURES.invalidPatternAllOnes);
+
+      expect(result.isValid).toBe(false);
+      expect(result.error).toBe(ERROR_MESSAGES.INVALID_CPF_PATTERN);
     });
   });
 });
