@@ -1,5 +1,5 @@
-export { CPFValidator, validateCPF, formatCPF, cleanCPF, maskCPF } from './cpf-validator';
-export { CNPJValidator, validateCNPJ, formatCNPJ, cleanCNPJ } from './cnpj-validator';
+export { CPFValidator, validateCPF, weakValidateCPF, formatCPF, cleanCPF, maskCPF } from './cpf-validator';
+export { CNPJValidator, validateCNPJ, weakValidateCNPJ, formatCNPJ, cleanCNPJ } from './cnpj-validator';
 export { ValidationResult, DocumentType, IDocumentValidator } from './types';
 export {
   CPF_LENGTH,
