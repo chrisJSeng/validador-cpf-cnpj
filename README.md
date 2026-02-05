@@ -26,179 +26,73 @@ npm install validador-cnpj-cpf
 
 ## 🔧 Usage
 
-> **Recommendations**
->
-> - Use **`weakValidateCPF` / `weakValidateCNPJ`** for development, QA/testing environments, and during the alphanumeric CNPJ transition period (July 2026+)
-> - Use **`validateCPF` / `validateCNPJ`** for production validation when check digit verification is required. This functions can perform weak validations too (by passing additional parameter)
->
 > Notes
 >
 > - All public APIs accept **strings only**.
 > - CPF is **digits-only** (11 digits after cleaning/format stripping).
-> - CNPJ supports **alphanumeric** characters (`0-9` and `A-Z`) and must match the structure `^[0-9A-Z]{12}\d{2}$` after cleaning (last two characters are numeric check digits).
+> - CNPJ supports **alphanumeric** characters (`0-9` and `A-Z`) and, after cleaning, must have **14 characters**: the **first 12** can be `0-9`/`A-Z`, and the **last 2** must be **numeric digits** (check digits).
+> - **Weak validation** checks **structure only** (allowed characters + length/shape) and **skips check digits**. This exists to support dev/QA and real-world transition/migration scenarios (e.g., alphanumeric CNPJ adoption) where the check digit verification may be unavailable, inconsistent, or intentionally ignored.
 
-### About the `{ validate: true }` flag
+### CPF
 
-`formatCPF`, `maskCPF`, and `formatCNPJ` are **best-effort by default**:
-
-- They try to clean/format what you pass in.
-- If the cleaned value has the wrong length/shape to be formatted, they return `null`.
-
-When you pass `{ validate: true }`, they become **strict**:
-
-- They first run the full validator (`validateCPF`/`validateCNPJ`).
-- If the document is invalid, they return `null`.
-
-Use strict mode when you want to **avoid formatting/masking invalid documents** (e.g., in UI output, logs, or API responses).
-
-### Weak Validation (New!)
-
-Weak validation checks document structure (format, length, allowed characters) but **skips check digit verification**. This is particularly useful in **development and QA environments** where you need flexible validation strategies.
-
-#### When to Use Weak Validation
-
-**Production Use Cases:**
-
-- **Alphanumeric CNPJs during the transition period** (July 2026+) when check digit algorithms may vary
-- Accepting documents from external systems that may use different verification algorithms
-- Pre-validation in forms before submitting to backend for full verification
-- Cases where you need to accept documents with potentially incorrect check digits
-
-**Development & QA Use Cases:**
-
-- **Mock/Test Data Generation**: Create test documents without calculating valid check digits 
-- **Integration Testing**: Test system behavior with various document formats without valid checksums
-- **Data Migration**: Validate document structure during migration when check digits might be recalculated later
-- **Seed Data**: Quickly populate databases with realistic-looking but not necessarily valid documents
-- **UI/UX Testing**: Test form validation, formatting, and error handling independently of check digit logic
-- **Performance Testing**: Generate large volumes of test documents without the overhead of checksum calculation
-
-#### Examples
+Weak validation for CPF exists mainly for **dev/QA** (mock data) and cases where you want to accept an input that **looks like a CPF** (digits-only + correct length) without requiring valid check digits.
 
 ```typescript
-import { weakValidateCPF, weakValidateCNPJ, validateCPF, validateCNPJ } from 'validador-cnpj-cpf';
+import { validateCPF, weakValidateCPF } from 'validador-cnpj-cpf';
 
-// Option 1: Dedicated weak validation functions
-const cpfResult = weakValidateCPF('123.456.789-01');
-console.log(cpfResult.isValid); // true (structure is valid)
+const strictValid = validateCPF('111.444.777-35')// { isValid: true };
 
-// Option 2: Use { weak: true } parameter
-const cnpjResult = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: true });
-console.log(cnpjResult.isValid); // true (format matches [A-Z0-9]{12}[0-9]{2})
+// Same input, different behavior
+const strictInvalid = validateCPF('123.456.789-01')// { isValid: false, error: string };
+const weakValid = validateCPF('123.456.789-01', { weak: true })// { isValid: true };
 
-// Strict validation (default)
-const strictResult = validateCNPJ('NZ.83Y.1JX/0001-69');
-console.log(strictResult.isValid); // false (check digits don't match)
+// Dedicated weak function (same as validateCPF(..., { weak: true }))
+const weak1 = weakValidateCPF('123.456.789-01')// { isValid: true };
+const weakInvalid = weakValidateCPF('123.456.78A-01')// { isValid: false, error: string };
 
-// Still rejects invalid structure (last 2 must be numeric digits)
-const invalidResult = weakValidateCNPJ('1A.23B.45C/678D-MN');
-console.log(invalidResult.isValid); // false
-
-// Development/QA: Quick test data generation
-const testDocuments = [
-  'AA.BBB.CCC/DDDD-01', // Fast mock CNPJ for UI testing
-  '123.456.789-99',     // Fast mock CPF for form testing
-];
-testDocuments.forEach(doc => {
-  console.log(validateCNPJ(doc, { weak: true })); // Validate format without calculating checksums
-});
+const envWeak = validateCPF('123.456.789-01', { weak: process.env.NODE_ENV !== 'production' })// { isValid: boolean, error?: string };
 ```
 
-#### Conditional Validation by Environment
-
-Switch between strict and weak validation based on `NODE_ENV`:
-
 ```typescript
-import { validateCPF } from 'validador-cnpj-cpf';
+import { formatCPF, maskCPF, cleanCPF } from 'validador-cnpj-cpf';
 
-const isDev = process.env.NODE_ENV !== 'production';
+const formatted = formatCPF('11144477735')// "111.444.777-35";
+const formattedStrict = formatCPF('12345678901', { validate: true })// null;
 
-// Option 1: Pass weak parameter based on environment
-const result = validateCPF('123.456.789-01', { weak: isDev });
-// Dev: { isValid: true }, Prod: { isValid: false }
+const masked = maskCPF('11144477735')// "111.***.***-35";
+const maskedStrict = maskCPF('12345678901', { validate: true })// null;
 
-// Option 2: Use ternary for function selection
-import { weakValidateCPF } from 'validador-cnpj-cpf';
-const cpfValidator = isDev ? weakValidateCPF : validateCPF;
-const result2 = cpfValidator('123.456.789-01');
+const cleaned = cleanCPF('111.444.777-35')// "11144477735";
 ```
 
-### Basic CPF Validation
+### CNPJ
+
+Weak validation for CNPJ is useful during the **alphanumeric transition** and integrations where you must accept a CNPJ that matches the official **structure** but cannot (or should not) enforce check digits.
 
 ```typescript
-import { validateCPF, formatCPF, cleanCPF, maskCPF } from 'validador-cnpj-cpf';
+import { validateCNPJ, weakValidateCNPJ } from 'validador-cnpj-cpf';
 
-// Validate CPF
-const result = validateCPF('111.444.777-35');
-if (result.isValid) {
-  console.log('Valid CPF!');
-} else {
-  console.log('Invalid CPF:', result.error);
-}
+const strictValid = validateCNPJ('11.222.333/0001-81')// { isValid: true };
+// Same input, different behavior
+const strictInvalid = validateCNPJ('NZ.83Y.1JX/0001-69')// { isValid: false, error: string };
+const weakValid = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: true })// { isValid: true };
 
-// Format CPF
-const formatted = formatCPF('11144477735');
-console.log(formatted); // "111.444.777-35"
+// Weak validation still rejects invalid structure (last 2 must be numeric digits)
+const weakInvalid = weakValidateCNPJ('1A.23B.45C/678D-MN')// { isValid: false, error: string };
 
-// Format CPF only if valid
-const formattedStrict = formatCPF('12345678901', { validate: true });
-console.log(formattedStrict); // null
+// Dedicated weak function (same as validateCNPJ(..., { weak: true }))
+const weak1 = weakValidateCNPJ('NZ.83Y.1JX/0001-69')// { isValid: true };
 
-// Mask CPF (hide middle digits)
-const masked = maskCPF('11144477735');
-console.log(masked); // "111.***.***-35"
-
-// Mask CPF only if valid
-const maskedStrict = maskCPF('12345678901', { validate: true });
-console.log(maskedStrict); // null
-
-// Clean CPF (remove formatting)
-const cleaned = cleanCPF('111.444.777-35');
-console.log(cleaned); // "11144477735"
-
-
+const envWeak = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: process.env.NODE_ENV !== 'production' })// { isValid: boolean, error?: string };
 ```
 
-### Basic CNPJ Validation
-
 ```typescript
-import { validateCNPJ, formatCNPJ, cleanCNPJ } from 'validador-cnpj-cpf';
+import { formatCNPJ, cleanCNPJ } from 'validador-cnpj-cpf';
 
-// Validate CNPJ
-const result = validateCNPJ('11.222.333/0001-81');
-if (result.isValid) {
-  console.log('Valid CNPJ!');
-} else {
-  console.log('Invalid CNPJ:', result.error);
-}
+const formatted = formatCNPJ('11222333000181')// "11.222.333/0001-81";
+const formattedStrict = formatCNPJ('11222333000182', { validate: true })// null;
 
-// Format CNPJ
-const formatted = formatCNPJ('11222333000181');
-console.log(formatted); // "11.222.333/0001-81"
-
-// Format CNPJ only if valid
-const formattedStrict = formatCNPJ('11222333000182', { validate: true });
-console.log(formattedStrict); // null
-
-// Clean CNPJ (remove formatting)
-const cleaned = cleanCNPJ('11.222.333/0001-81');
-console.log(cleaned); // "11222333000181"
-
-
-```
-
-### Advanced Usage with Classes
-
-```typescript
-import { CPFValidator, CNPJValidator } from 'validador-cnpj-cpf';
-
-// Using CPF validator class
-const cpfValidator = new CPFValidator();
-const cpfResult = cpfValidator.validate('111.444.777-35');
-
-// Using CNPJ validator class
-const cnpjValidator = new CNPJValidator();
-const cnpjResult = cnpjValidator.validate('11.222.333/0001-81');
+const cleaned = cleanCNPJ('11.222.333/0001-81')// "11222333000181";
 ```
 
 ### Custom Validation with Guards
@@ -213,9 +107,8 @@ import {
   stripDocumentFormatting,
 } from 'validador-cnpj-cpf';
 
-// Create custom validation pipeline
 const input = '12345678901';
-const stripped = stripDocumentFormatting(input);
+const stripped = stripDocumentFormatting(input)// "12345678901";
 const guards = chainGuards(
   guardIsString(input),
   guardNotEmpty(input),
@@ -223,9 +116,7 @@ const guards = chainGuards(
   guardLength(stripped, 11, 'Must be 11 digits'),
 );
 
-if (!guards.isValid) {
-  console.error('Validation failed:', guards.error);
-}
+// guards: { isValid: boolean, error?: string }
 ```
 
 ## 🏗️ Architecture
@@ -312,7 +203,6 @@ The library includes comprehensive test coverage (99%+) with tests organized by 
 - **cnpj-validator.test.ts** - CNPJ validation, formatting, alphanumeric support, and weak validation tests
 - **guards.test.ts** - Input validation guard tests
 - **utils.test.ts** - Utility function tests
-- **variant-analysis.test.ts** - Edge cases and variant testing
 - **index.test.ts** - Integration tests
 
 Weak validation tests are integrated into the existing test files, making it easy to compare behavior between strict and weak validation modes.
