@@ -93,6 +93,13 @@ const formatted = formatCNPJ('11222333000181')// "11.222.333/0001-81";
 const formattedStrict = formatCNPJ('11222333000182', { validate: true })// null;
 
 const cleaned = cleanCNPJ('11.222.333/0001-81')// "11222333000181";
+
+// Alphanumeric CNPJ: letters are preserved and uppercased
+const formattedAlpha = formatCNPJ('nz.83y.1jx/0001-69')// "NZ.83Y.1JX/0001-69";
+const cleanedAlpha = cleanCNPJ('nz.83y.1jx/0001-69')// "NZ83Y1JX000169";
+
+// Strict formatting requires valid check digits
+const formattedAlphaStrict = formatCNPJ('NZ.83Y.1JX/0001-69', { validate: true })// null;
 ```
 
 ### Custom Validation with Guards
