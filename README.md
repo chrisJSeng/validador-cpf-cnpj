@@ -148,7 +148,6 @@ This library follows best practices and design principles:
 
 - Uses `Set` for O(1) invalid pattern lookups
 - Pre-calculates multipliers for check digit validation
-- Uses `Object.freeze()` for immutable constants
 - Efficient array operations with modern JavaScript
 
 ## 🛡️ Security
