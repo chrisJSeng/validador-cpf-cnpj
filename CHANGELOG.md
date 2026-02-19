@@ -15,17 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `ROADMAP.md` outlining near/medium/long-term priorities.
 - Added GitHub Actions workflow (`.github/workflows/publish-npm.yml`) to publish to npm on `v*` tags with provenance after a successful CI run (uses npm Trusted Publisher/OIDC with `id-token: write`).
 - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) to run lint/test/build on Node.js 18 and 20.
-- Added security workflows for Snyk and Socket (`.github/workflows/security-snyk.yml`, `.github/workflows/security-socket.yml`).
-- Added security workflows for Snyk and Socket (`.github/workflows/security-snyk.yml`, `.github/workflows/security-socket.yml`).
+- Added security workflow for Snyk (`.github/workflows/security-snyk.yml`).
 - Updated README badges (npm version/downloads/license, CI, coverage, Snyk).
 
 ### Fixed
-
-- Fixed Socket workflow to install and run the `socket` binary directly (avoids `npx`/`npm exec` argument parsing issues).
-- Fixed Socket workflow runner crash by using the stable npm CLI package (`socket`) instead of the nightly binary installer.
 - Fixed workflow YAML parsing compatibility by quoting the top-level `"on":` key.
 - Fixed npm Trusted Publisher publishing by upgrading the GitHub Actions publish job to use Node.js 22 and npm CLI 11.5.1+.
-- Removed Socket workflow from PR/push checks (scheduled/manual only).
+
+### Removed
+
+- Removed the Socket security workflow (`.github/workflows/security-socket.yml`).
 
 ## [1.1.1](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.1)
 
