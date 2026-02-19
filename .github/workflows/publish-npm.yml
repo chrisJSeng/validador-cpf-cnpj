@@ -1,6 +1,6 @@
 name: Publish to npm
 
-on:
+"on":
   workflow_run:
     workflows: ["CI"]
     types:
@@ -14,7 +14,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Checkout
@@ -22,8 +22,10 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 0
+          fetch-tags: true
 
-      - name: Ensure tag trigger
+      - name: Detect tag trigger
+        id: tag
         shell: bash
         run: |
           set -euo pipefail
@@ -31,11 +33,15 @@ jobs:
           tag=$(git tag --points-at "$sha" 'v*' | head -n 1 || true)
           if [[ -z "$tag" ]]; then
             echo "No v* tag found for sha=$sha; skipping publish."
+            echo "has_tag=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "Publishing for tag: $tag"
+          echo "has_tag=true" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
+        if: steps.tag.outputs.has_tag == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -43,15 +49,17 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install
+        if: steps.tag.outputs.has_tag == 'true'
         run: npm ci
 
       - name: Test
+        if: steps.tag.outputs.has_tag == 'true'
         run: npm test
 
       - name: Build
+        if: steps.tag.outputs.has_tag == 'true'
         run: npm run build
 
       - name: Publish
+        if: steps.tag.outputs.has_tag == 'true'
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

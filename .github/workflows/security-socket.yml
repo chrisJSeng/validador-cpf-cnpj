@@ -1,6 +1,6 @@
 name: Security - Socket
 
-on:
+"on":
   push:
     branches:
       - main
@@ -29,9 +29,15 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Install Socket CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/SocketDev/socket-cli/main/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          socket --version
+
       - name: Socket scan
         env:
-          SOCKET_SECURITY_TOKEN: ${{ secrets.SOCKET_SECURITY_TOKEN }}
-        run: |
-          npx --yes @socketsecurity/cli --version
-          npx --yes @socketsecurity/cli ci
+          SOCKET_CLI_API_TOKEN: ${{ secrets.SOCKET_SECURITY_TOKEN }}
+        run: socket ci

@@ -1,6 +1,6 @@
 name: Security - Snyk
 
-on:
+"on":
   push:
     branches:
       - main
