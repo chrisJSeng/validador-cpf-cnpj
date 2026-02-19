@@ -1,8 +1,13 @@
 # Validador CPF/CNPJ 🇧🇷
 
+[![npm version](https://img.shields.io/npm/v/validador-cnpj-cpf.svg)](https://www.npmjs.com/package/validador-cnpj-cpf)
+[![npm downloads](https://img.shields.io/npm/dw/validador-cnpj-cpf.svg)](https://www.npmjs.com/package/validador-cnpj-cpf)
+[![license](https://img.shields.io/npm/l/validador-cnpj-cpf.svg)](LICENSE)
+[![CI](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj/branch/main/graph/badge.svg)](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj)
+[![Security - Snyk](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml)
+[![Security - Socket](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Coverage](https://img.shields.io/badge/coverage-99%25+-green.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A high-performance, secure, and modular TypeScript library for validating Brazilian documents (CPF and CNPJ).
 
@@ -73,6 +78,7 @@ Weak validation for CNPJ is useful during the **alphanumeric transition** and in
 import { validateCNPJ, weakValidateCNPJ } from 'validador-cnpj-cpf';
 
 const strictValid = validateCNPJ('11.222.333/0001-81')// { isValid: true };
+
 // Same input, different behavior
 const strictInvalid = validateCNPJ('NZ.83Y.1JX/0001-69')// { isValid: false, error: string };
 const weakValid = validateCNPJ('NZ.83Y.1JX/0001-69', { weak: true })// { isValid: true };
