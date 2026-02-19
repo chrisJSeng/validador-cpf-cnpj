@@ -30,11 +30,8 @@ jobs:
         run: npm ci
 
       - name: Install Socket CLI
-        shell: bash
         run: |
-          set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/SocketDev/socket-cli/main/install.sh | bash
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          npm install -g socket@1.1.63
           socket --version
 
       - name: Socket scan
