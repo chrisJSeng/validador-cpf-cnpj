@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.2/1.1.3](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.2)
+## [1.1.4](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.4)
 
 ### Added
 
@@ -25,9 +25,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed the Socket security workflow (`.github/workflows/security-socket.yml`).
-
-## [1.1.1](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.1)
-
-### Notes
-
-- Baseline version recorded when this changelog was introduced (matches `package.json`).
