@@ -13,24 +13,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: npm
+          node-version: 22
 
-      - name: Install
-        run: npm ci
+      - run: npm ci
 
       - name: Install Socket CLI
-        run: |
-          npm install -g socket@1.1.63
-          socket --version
+        run: npm install -g socket
 
-      - name: Socket scan
+      - name: Run Socket Scan
+        run: socket scan
         env:
           SOCKET_CLI_API_TOKEN: ${{ secrets.SOCKET_SECURITY_TOKEN }}
-        run: socket ci
