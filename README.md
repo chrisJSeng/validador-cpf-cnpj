@@ -6,6 +6,7 @@
 [![CI](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj/branch/main/graph/badge.svg)](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj)
 [![Security - Snyk](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml)
+[![Security - Socket](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
 A high-performance, secure, and modular TypeScript library for validating Brazilian documents (CPF and CNPJ).
