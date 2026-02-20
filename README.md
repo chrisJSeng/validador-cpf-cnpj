@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dw/validador-cnpj-cpf.svg)](https://www.npmjs.com/package/validador-cnpj-cpf)
 [![license](https://img.shields.io/npm/l/validador-cnpj-cpf.svg)](LICENSE)
 [![CI](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj/branch/main/graph/badge.svg)](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj)
+[![codecov](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj/graph/badge.svg?token=5PIR0EJAUG)](https://codecov.io/gh/chrisJSeng/validador-cpf-cnpj)
 [![Security - Snyk](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-snyk.yml)
 [![Security - Socket](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml/badge.svg)](https://github.com/chrisJSeng/validador-cpf-cnpj/actions/workflows/security-socket.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
