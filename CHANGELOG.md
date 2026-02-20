@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.5)
+
+### Added
+
+- Added Socket security workflow (`.github/workflows/security-socket.yml`) scheduled/manual only.
+- Updated README badges to include Socket.
+- Fixed Codecov uploads by allowing an optional `CODECOV_TOKEN` and enabling verbose logs (helps resolve “unknown” coverage badge).
+
 ## [1.1.4](https://github.com/chrisJSeng/validador-cpf-cnpj/releases/tag/v1.1.4)
 
 ### Added
@@ -16,12 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added GitHub Actions workflow (`.github/workflows/publish-npm.yml`) to publish to npm on `v*` tags with provenance after a successful CI run (uses npm Trusted Publisher/OIDC with `id-token: write`).
 - Added GitHub Actions CI workflow (`.github/workflows/ci.yml`) to run lint/test/build on Node.js 18 and 20.
 - Added security workflow for Snyk (`.github/workflows/security-snyk.yml`).
+- Added Socket security workflow (`.github/workflows/security-socket.yml`) scheduled/manual only.
 - Updated README badges (npm version/downloads/license, CI, coverage, Snyk).
+- Updated README badges to include Socket.
 
 ### Fixed
+
 - Fixed workflow YAML parsing compatibility by quoting the top-level `"on":` key.
 - Fixed npm Trusted Publisher publishing by upgrading the GitHub Actions publish job to use Node.js 22 and npm CLI 11.5.1+.
-
-### Removed
-
-- Removed the Socket security workflow (`.github/workflows/security-socket.yml`).
+- Fixed Codecov uploads by allowing an optional `CODECOV_TOKEN` and enabling verbose logs (helps resolve “unknown” coverage badge).
