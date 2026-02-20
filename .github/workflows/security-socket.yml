@@ -25,6 +25,6 @@ jobs:
         run: npm install -g socket
 
       - name: Run Socket Scan
-        run: socket scan --severity=high
+        run: socket scan --severity high
         env:
           SOCKET_CLI_API_TOKEN: ${{ secrets.SOCKET_SECURITY_TOKEN }}
