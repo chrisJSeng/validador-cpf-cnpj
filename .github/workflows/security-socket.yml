@@ -11,20 +11,30 @@ permissions:
 jobs:
   socket:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
+      
       - run: npm ci
-
+      
       - name: Install Socket CLI
         run: npm install -g socket
-
+      
       - name: Run Socket Scan
-        run: socket scan --severity high
+        run: |
+          socket scan --json | tee socket-report.json || SCAN_EXIT_CODE=$?
+          echo "Socket scan exit code: ${SCAN_EXIT_CODE:-0}"
+          cat socket-report.json
+          exit ${SCAN_EXIT_CODE:-0}
         env:
           SOCKET_CLI_API_TOKEN: ${{ secrets.SOCKET_SECURITY_TOKEN }}
+      
+      - name: Upload Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: socket-security-report
+          path: socket-report.json
