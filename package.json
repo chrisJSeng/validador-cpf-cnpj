@@ -1,6 +1,6 @@
 {
   "name": "validador-cnpj-cpf",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Brazilian CPF/CNPJ validator (supports alphanumeric CNPJ / CNPJ alfanumerico) - validador de CPF/CNPJ (suporta CNPJ alfanumérico)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
