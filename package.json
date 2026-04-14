@@ -3,16 +3,23 @@
   "version": "1.1.7",
   "description": "Brazilian CPF/CNPJ validator (supports alphanumeric CNPJ / CNPJ alfanumerico) - validador de CPF/CNPJ (suporta CNPJ alfanumérico)",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "bin": {
+    "validate-cnpj": "./src/validate-cnpj.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "sideEffects": false,
   "scripts": {
-    "build": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\" && tsc",
+    "build": "node build.js",
+    "build:verify": "npm run build && node -e \"const p = require('./package.json'); const fs = require('fs'); const has = (f) => fs.existsSync(f); if(!has(p.main) || !has(p.module) || !has(p.types)) throw new Error('Missing build artifacts');\"",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "lint": "eslint 'src/**/*.ts'",
